@@ -21,8 +21,8 @@ export function Hero() {
           Щоб люди ставили задачі й ухвалювали рішення, а рутину робили агенти.
         </p>
 
-        {/* На телефоні кнопки на всю ширину одна під одною, далі — в рядок. */}
-        <div className="grid gap-4 sm:flex sm:flex-wrap">
+        {/* 375: кнопки на всю ширину одна під одною; від 768 — в рядок. */}
+        <div className="grid gap-4 md:flex md:flex-wrap">
           <Button href="#contact" size="lg">
             Розказати про задачу →
           </Button>
