@@ -1,9 +1,11 @@
 "use server";
 
+import { Resend } from "resend";
+
 /** Ліміт повідомлення: той самий, що в підказці під полем («до 1000 символів»). */
 const MESSAGE_LIMIT = 1000;
 
-/** Назва поля-пастки для ботів. Нейтральна, щоб браузер не підставив туди дані автозаповненням. */
+/** Поля форми, які бачить людина. Поле-пастка для ботів (hp_check) сюди не входить. */
 export type ContactField = "name" | "email" | "message";
 
 export type ContactValues = Record<ContactField, string>;
@@ -11,6 +13,8 @@ export type ContactValues = Record<ContactField, string>;
 export type ContactState = {
   /** idle — ще не надсилали; invalid — є помилки полів; sent — успіх; failed — збій надсилання. */
   status: "idle" | "invalid" | "sent" | "failed";
+  /** Текст збою з запасною поштою; лише коли status — failed. */
+  failure?: string;
   /** Тексти помилок по полях, у порядку полів форми. */
   errors: Partial<Record<ContactField, string>>;
   /** Введені значення: React 19 скидає некеровані поля після action, тож повертаємо їх назад. */
@@ -48,7 +52,8 @@ function validate(values: ContactValues) {
 
 /**
  * Серверна функція форми заявки (секція contact).
- * Поки лише перевіряє поля й пастку і повертає успіх; лист не надсилає.
+ * Перевіряє поля й пастку, потім надсилає лист через Resend.
+ * Ключ — RESEND_API_KEY, пошта отримувача — CONTACT_EMAIL (обидві змінні в .env.local і на Vercel).
  */
 export async function sendContact(prev: ContactState, formData: FormData): Promise<ContactState> {
   const values: ContactValues = {
@@ -66,6 +71,32 @@ export async function sendContact(prev: ContactState, formData: FormData): Promi
   const errors = validate(values);
   if (Object.keys(errors).length > 0) {
     return { status: "invalid", errors, values, attempt };
+  }
+
+  const to = process.env.CONTACT_EMAIL;
+  // Текст збою — з таблиці текстів форми, із запасною поштою.
+  const failure = `Заявка не надіслалась. Спробуйте ще раз або напишіть мені на ${to ?? ""}`;
+
+  // Будь-яка помилка (немає ключа чи пошти, виняток, error у відповіді Resend) — збій, а не успіх.
+  try {
+    if (!to) throw new Error("Missing CONTACT_EMAIL");
+    // Клієнт створюємо тут, а не на рівні файлу: без ключа конструктор кидає виняток,
+    // і на рівні файлу це ламало б усю сторінку замість повідомлення про збій.
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const { error } = await resend.emails.send({
+      from: "Портфоліо <onboarding@resend.dev>",
+      to,
+      replyTo: values.email,
+      subject: `Заявка з сайту від ${values.name}`,
+      text: `Ім'я: ${values.name}\nПошта: ${values.email}\nПовідомлення: ${values.message}`,
+    });
+    if (error) {
+      console.error("Resend повернув помилку:", error.name, error.message);
+      return { status: "failed", failure, errors: {}, values, attempt };
+    }
+  } catch (err) {
+    console.error("Заявка не надіслалась:", err instanceof Error ? err.message : err);
+    return { status: "failed", failure, errors: {}, values, attempt };
   }
 
   return { status: "sent", errors: {}, values: { name: "", email: "", message: "" }, attempt };

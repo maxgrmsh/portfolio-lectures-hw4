@@ -29,6 +29,14 @@ Next.js 16 (App Router) + TypeScript + Tailwind v4. Storybook 10 (`@storybook/ne
 - `WorkCard` — картка роботи: обкладинка, номер і назва, опис; уся картка — посилання.
 - `Nav` — навігація: логотип, пункти з активним станом, кнопка праворуч; до 1024px (375 і 768) згортається в «Меню».
 
+## Форма заявки
+
+- Форма — `src/components/sections/ContactForm.tsx` (клієнтський компонент, `useActionState`), секція `#contact`.
+- Серверна функція — `src/app/actions/contact.ts` (`sendContact`): перевіряє поля й поле-пастку `hp_check`, повертає введені значення разом із помилками, надсилає лист через Resend (`onboarding@resend.dev`, `replyTo` — пошта відвідувача, простий текст).
+- Ключ — у змінній `RESEND_API_KEY`, пошта отримувача — `CONTACT_EMAIL`: обидві в `.env.local` (вставляє власник сам) і на Vercel (Production). Клієнт Resend створюється всередині функції.
+- Будь-яка помилка надсилання — повідомлення про збій і `console.error` на сервері, не успіх.
+- Файли `.env*` не читаємо й не відкриваємо: ні інструментом читання, ні командами.
+
 ## Картинки
 
 Картинки компонентів імпортуються статично з `src/assets/` (`import cover from "@/assets/cases/training.jpg"`). Файли з `public/` у Storybook недоступні: `staticDirs` навмисно вимкнено, бо Storybook збирається в `public/storybook`.

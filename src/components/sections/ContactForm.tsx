@@ -67,6 +67,12 @@ export function ContactForm() {
           }}
           className="flex flex-col gap-6"
         >
+          {state.status === "failed" && state.failure && (
+            <p role="alert" className="rounded-card border-2 border-danger bg-surface p-4 font-sans text-body text-danger">
+              {state.failure}
+            </p>
+          )}
+
           {errorFields.length > 0 && (
             <div
               ref={summaryRef}
