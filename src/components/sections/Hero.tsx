@@ -37,9 +37,10 @@ export function Hero() {
         <Image
           src={portrait}
           alt="Максим Гармаш у горах, у капелюсі й сонцезахисних окулярах"
-          sizes="(min-width: 1024px) 320px, 100vw"
+          sizes="(min-width: 1024px) 320px, (min-width: 768px) calc(100vw - 64px), calc(100vw - 32px)"
           placeholder="blur"
-          priority
+          loading="eager"
+          fetchPriority="high"
           className="aspect-4/3 w-full object-cover md:aspect-video lg:aspect-portrait"
         />
 
