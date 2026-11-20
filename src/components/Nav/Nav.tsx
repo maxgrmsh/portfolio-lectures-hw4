@@ -45,7 +45,7 @@ function Logo() {
 
 /**
  * Навігація сайту: логотип, пункти меню, кнопка праворуч.
- * На вузькому екрані (до 768px) пункти ховаються за кнопкою «Меню».
+ * До 1024px (375 і 768) пункти ховаються за кнопкою «Меню».
  */
 export function Nav({ items, current, ctaLabel, ctaHref, defaultOpen = false }: NavProps) {
   const [open, setOpen] = useState(defaultOpen);
@@ -66,8 +66,8 @@ export function Nav({ items, current, ctaLabel, ctaHref, defaultOpen = false }: 
       <div className="flex items-center justify-between gap-6 py-4">
         <Logo />
 
-        {/* Широкий екран: пункти в рядок. */}
-        <ul className="hidden items-center gap-8 md:flex">
+        {/* Від 1024px: пункти в рядок. */}
+        <ul className="hidden items-center gap-8 lg:flex">
           {items.map((item) => (
             <li key={item.href}>
               <Link
@@ -94,7 +94,7 @@ export function Nav({ items, current, ctaLabel, ctaHref, defaultOpen = false }: 
           aria-expanded={open}
           aria-controls={panelId}
           onClick={() => setOpen((v) => !v)}
-          className={`flex cursor-pointer items-center gap-2 rounded-control border-2 border-ink-muted px-4 py-2 font-mono text-label uppercase text-ink hover:border-ink md:hidden ${focusRing}`}
+          className={`flex cursor-pointer items-center gap-2 rounded-control border-2 border-ink-muted px-4 py-2 font-mono text-label uppercase text-ink hover:border-ink lg:hidden ${focusRing}`}
         >
           <svg aria-hidden="true" viewBox="0 0 16 16" className="size-4" fill="none">
             {open ? (
@@ -111,7 +111,7 @@ export function Nav({ items, current, ctaLabel, ctaHref, defaultOpen = false }: 
       <div
         id={panelId}
         hidden={!open}
-        className="absolute inset-x-0 top-full rounded-card border-2 border-ink bg-canvas px-4 md:hidden"
+        className="absolute inset-x-0 top-full rounded-card border-2 border-ink bg-canvas px-4 lg:hidden"
       >
         <ul className="flex flex-col py-2">
           {items.map((item) => (
