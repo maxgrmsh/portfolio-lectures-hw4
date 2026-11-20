@@ -34,6 +34,11 @@
   --text-display--letter-spacing: -0.05em;
   --text-display--font-weight: 700;
 
+  --text-headline: clamp(1.75rem, 1.2rem + 1.8vw, 2.75rem); /* заголовки секцій головної, 44px на десктопі */
+  --text-headline--line-height: 1.15;
+  --text-headline--letter-spacing: -0.05em;
+  --text-headline--font-weight: 700;
+
   --text-lead: 1.3125rem; /* лід під заголовком, 21px */
   --text-lead--line-height: 1.5;
 
