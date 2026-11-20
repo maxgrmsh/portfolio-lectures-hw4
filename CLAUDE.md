@@ -5,7 +5,7 @@
 ## Стек
 
 Next.js 16 (App Router) + TypeScript + Tailwind v4. Storybook 10 (`@storybook/nextjs-vite`) для компонентів.
-План сайту: `docs/plan.html`. Макет: Figma «HW-1 Example».
+Макет: Figma «HW-1 Example».
 
 ## Токени
 
@@ -30,3 +30,9 @@ Next.js 16 (App Router) + TypeScript + Tailwind v4. Storybook 10 (`@storybook/ne
 
 - `storybook` — історії й документація компонентів, налаштування й збірка Storybook.
 - `vercel` — превʼю й продакшн-деплой. Продакшн, пуш і злиття в `main` лише після «так» у чаті.
+
+## Посилання
+
+- План сайту: `docs/plan.html`.
+- Опис головної сторінки (секції, `id`, поведінка на 375, 768, 1024, 1440): `docs/homepage.md`.
+- Storybook: `/storybook` на живому сайті.
