@@ -13,6 +13,13 @@ Next.js 16 (App Router) + TypeScript + Tailwind v4. Storybook 10 (`@storybook/ne
 Перегляд усіх токенів: Storybook, `Foundations/Tokens` (`src/design-system/Tokens.mdx`).
 Ролі кольору: `canvas`, `surface`, `line`, `accent`, `ink`, `ink-muted`, `danger`. Радіуси `rounded-control`, `rounded-card` (обидва 0). Відступи в компонентах — лише кроки 2, 3, 4, 6, 8. Для розкладки сторінок є ще `max-w-page` (1224px) і `section` (72px: `gap-section`, `pt-section`); у компонентах їх не використовуйте. Повні правила — у скілі `.claude/skills/storybook/SKILL.md`, розділ «Токени системи».
 
+## Правила
+
+- Одна гілка `main`; кожен пуш у `main` публікує сайт.
+- Ширини курсу → префікси Tailwind: 375 — без префікса, 768 — md:, 1024 — lg:, 1440 — xl: (діє від 1280). sm: і 2xl: не використовуємо.
+- Жодних hex, класів поза `@theme` і значень у квадратних дужках.
+- Секції головної — `src/components/sections/`: це частини сторінки, не компоненти системи. Лише в них (і в `src/app`) можна `max-w-page` і `section`.
+
 ## Компоненти
 
 Лежать у `src/components/<Назва>/`: компонент і історія `<Назва>.stories.tsx` з описом для docs.
