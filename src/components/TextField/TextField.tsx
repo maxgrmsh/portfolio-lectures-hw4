@@ -19,8 +19,16 @@ export interface TextFieldProps {
   errorMessage?: string;
   /** Вимкнене поле: не редагується, текст ink-muted. */
   disabled?: boolean;
-  /** Обовʼязкове поле. */
+  /** Обовʼязкове поле. У формах із власною перевіркою (noValidate) не задавайте: браузер покаже свою підказку. */
   required?: boolean;
+  /** Багаторядкове поле (textarea) для довгого тексту, наприклад повідомлення у формі заявки. */
+  multiline?: boolean;
+  /** Висота багаторядкового поля в рядках. */
+  rows?: number;
+  /** Підказка браузеру для автозаповнення: `name`, `email`, `off`. */
+  autoComplete?: string;
+  /** Власний `id` поля. Потрібен, щоб на поле вело посилання, наприклад зі зведення помилок форми. */
+  id?: string;
 }
 
 /** Іконка помилки: коло зі знаком оклику, колір береться з тексту (danger). */
@@ -40,7 +48,7 @@ const inputBase =
 
 /**
  * Текстове поле з підписом над ним. Межа `ink-muted`, кути `rounded-control`.
- * Стани: звичайне, наведення, фокус, заповнене, помилка, вимкнене.
+ * Стани: звичайне, наведення, фокус, заповнене, помилка, вимкнене. З `multiline` — багаторядкове.
  */
 export function TextField({
   label,
@@ -53,8 +61,13 @@ export function TextField({
   errorMessage,
   disabled = false,
   required = false,
+  multiline = false,
+  rows = 5,
+  autoComplete,
+  id: idProp,
 }: TextFieldProps) {
-  const id = useId();
+  const autoId = useId();
+  const id = idProp ?? autoId;
   const messageId = `${id}-message`;
   const showError = hasError && !disabled;
   const message = showError ? errorMessage : hint;
@@ -65,31 +78,39 @@ export function TextField({
       ? "border-danger bg-surface text-ink"
       : "border-ink-muted bg-surface text-ink hover:border-ink";
 
+  const fieldProps = {
+    name,
+    placeholder,
+    defaultValue,
+    disabled,
+    required,
+    autoComplete,
+    "aria-invalid": showError || undefined,
+    "aria-describedby": message ? messageId : undefined,
+  };
+
   return (
     <div className="flex flex-col gap-2">
       <label htmlFor={id} className={`font-mono text-label uppercase ${disabled ? "text-ink-muted" : "text-ink"}`}>
         {label}
         {required && <span aria-hidden="true"> *</span>}
       </label>
-      <input
-        id={id}
-        name={name}
-        type={type}
-        placeholder={placeholder}
-        defaultValue={defaultValue}
-        disabled={disabled}
-        required={required}
-        aria-invalid={showError || undefined}
-        aria-describedby={message ? messageId : undefined}
-        className={`${inputBase} ${state}`}
-      />
+      {multiline ? (
+        <textarea id={id} rows={rows} {...fieldProps} className={`${inputBase} ${state} resize-y`} />
+      ) : (
+        <input id={id} type={type} {...fieldProps} className={`${inputBase} ${state}`} />
+      )}
       {message && (
         <p
           id={messageId}
           className={`flex gap-2 font-sans text-caption ${showError ? "text-danger" : "text-ink-muted"}`}
         >
           {showError && <ErrorIcon />}
-          {message}
+          <span>
+            {/* Префікс видно лише скрінрідеру: він чує «Помилка: …», а не просто текст під полем. */}
+            {showError && <span className="sr-only">Помилка: </span>}
+            {message}
+          </span>
         </p>
       )}
     </div>

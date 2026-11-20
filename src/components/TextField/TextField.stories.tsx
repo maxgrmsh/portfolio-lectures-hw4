@@ -11,12 +11,14 @@ const description = `
 - Наведення: межа \`ink\`.
 - Фокус (Tab або клік): контур \`ink\` 2px з відступом.
 - Заповнене: текст \`ink\` (задайте \`defaultValue\`).
-- Помилка: межа \`danger\`, під полем іконка й текст \`danger\` (5.9 : 1). Поле позначене \`aria-invalid\`, текст помилки повʼязаний з полем через \`aria-describedby\`. Колір не єдиний сигнал: є іконка й текст.
+- Помилка: межа \`danger\`, під полем іконка й текст \`danger\` (5.9 : 1). Поле позначене \`aria-invalid\`, текст помилки повʼязаний з полем через \`aria-describedby\`, перед ним прихований для очей префікс «Помилка:» для скрінрідера. Колір не єдиний сигнал: є іконка й текст.
 - Вимкнене: пунктирна межа \`line\`, фон \`canvas\`, текст і підпис \`ink-muted\`. Помилка у вимкненому полі не показується.
 
 **Токени**: \`surface\`, \`canvas\`, \`ink\`, \`ink-muted\`, \`line\`, \`danger\`; \`font-mono\` + \`text-label\` (підпис), \`font-sans\` + \`text-body\` (значення), \`text-caption\` (підказка й помилка); \`rounded-control\`.
 
-**Коли використовувати**: короткий текст у формі: імʼя, пошта, телефон. **Коли ні**: довгий текст (потрібне багаторядкове поле, його ще немає), вибір із варіантів.
+**Багаторядкове**: \`multiline\` перетворює поле на \`textarea\` з тими самими станами; висота — \`rows\`, людина може розтягнути поле вниз. Ліміт пишіть у \`hint\` («до 1000 символів»).
+
+**Коли використовувати**: текст у формі: імʼя, пошта, телефон; з \`multiline\` — повідомлення. **Коли ні**: вибір із варіантів.
 
 **Як взяти в код**
 \`\`\`tsx
@@ -24,6 +26,7 @@ import { TextField } from "@/components/TextField/TextField";
 
 <TextField label="Пошта" name="email" type="email" placeholder="name@example.com" required />
 <TextField label="Пошта" name="email" hasError errorMessage="Перевірте адресу: бракує @" />
+<TextField label="Повідомлення" name="message" multiline hint="до 1000 символів" />
 \`\`\`
 `;
 
@@ -42,6 +45,8 @@ const meta = {
     required: { control: "boolean" },
     defaultValue: { control: "text" },
     hint: { control: "text" },
+    multiline: { control: "boolean" },
+    rows: { control: { type: "number", min: 2, max: 12 }, if: { arg: "multiline" } },
   },
   args: {
     label: "Пошта",
@@ -54,6 +59,8 @@ const meta = {
     errorMessage: "Перевірте адресу: бракує @",
     disabled: false,
     required: false,
+    multiline: false,
+    rows: 5,
   },
   // key: щоб зміна defaultValue у Controls одразу показувала заповнене поле.
   render: (args) => (
